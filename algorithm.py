@@ -45,8 +45,8 @@ class Encoding:
 
         All these parameters should be kept as attributes of the class.
         """
-
-        # Insert code here
+      # code here
+      
 
 
     def process(self, fs, s):
@@ -85,17 +85,17 @@ class Encoding:
 
         self.fs = fs
         self.s = s
+        f,t,Sxx =  spectrogram(s,fs)
+        a = peak_local_max(f)
 
-        # Insert code here
 
 
     def display_spectrogram(self):
-
-        """
-        Display the spectrogram of the audio signal
-        """
-
-        # Insert code here
+      f, t, Sxx = spectrogram(self.s, self.fs)
+      plt.pcolormesh(t, f, Sxx, shading='gouraud')
+      plt.ylabel('Frequency [Hz]')
+      plt.xlabel('Time [sec]')
+      plt.show()
 
 
 
