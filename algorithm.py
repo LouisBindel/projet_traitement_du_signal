@@ -27,9 +27,9 @@ class Encoding:
 
     """
 
-    def __init__(self):
+    def __init__(self,s,fs):
 
-        """
+      """
         Class constructor
 
         To Do
@@ -44,14 +44,15 @@ class Encoding:
         - etc.
 
         All these parameters should be kept as attributes of the class.
-        """
+      """
       # code here
+      self.fs = fs
+      self.s =  s
       
 
 
-    def process(self, fs, s):
-
-        """
+    def process(self):
+      """
 
         To Do
         -----
@@ -81,12 +82,12 @@ class Encoding:
            sampling frequency [Hz]
         s: numpy array
            sampled signal
-        """
+      """
 
-        self.fs = fs
-        self.s = s
-        f,t,Sxx =  spectrogram(s,fs)
-        a = peak_local_max(f)
+      fs=self.fs 
+      s= self.s 
+      f,t,Sxx =  spectrogram(s,fs)
+      a = peak_local_max(f)
 
 
 
