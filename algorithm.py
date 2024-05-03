@@ -16,7 +16,7 @@ from skimage.feature import peak_local_max
 
 class Encoding:
 
-    """
+   """
     Class implementing the procedure for creating a fingerprint 
     for the audio files
 
@@ -25,33 +25,18 @@ class Encoding:
     - extract local maxima of the spectrogram
     - create hashes using these maxima
 
-    """
+   """
 
-    def __init__(self,s,fs):
-
-      """
-        Class constructor
-
-        To Do
-        -----
-
-        Initialize in the constructor all the parameters required for
-        creating the signature of the audio files. These parameters include for
-        instance:
-        - the window selected for computing the spectrogram
-        - the size of the temporal window 
-        - the size of the overlap between subsequent windows
-        - etc.
-
-        All these parameters should be kept as attributes of the class.
-      """
-      # code here
+   def __init__(self, fs, s):
+      #Initialize Fingerprinting object with sampling frequency (fs) and sampled signal (s)
       self.fs = fs
-      self.s =  s
+      self.s = s
+      self.spectrogram = None
+      self.hashes = []
       
 
 
-    def process(self):
+   def process(self):
       """
 
         To Do
@@ -84,15 +69,27 @@ class Encoding:
            sampled signal
       """
 
-      fs=self.fs 
-      s= self.s 
-      f,t,Sxx =  spectrogram(s,fs)
-      a = peak_local_max(f)
-
-
-
-    def display_spectrogram(self):
       f, t, Sxx = spectrogram(self.s, self.fs)
+      self.spectrogram = (f, t, Sxx)
+      local_maxima = peak_local_max(Sxx,min_distance=50)
+      hashes = []
+      # Generate hashes
+      delta_t=1
+      delta_f=1500
+      for point in local_maxima:
+         t_anchor, f_anchor = point[1], point[0]
+         for other_point in local_maxima:
+            if other_point[1] > f_anchor and other_point-f_anchor<=delta_t and abs(other_point[0]-f_anchor)<delta_f :
+               t_target, f_target = other_point[1], other_point[0]
+               time_diff = t_target - t_anchor
+               freq_diff = f_target - f_anchor
+               hashes.append({"t": t_anchor, "hash": np.array([time_diff, f_anchor, f_target])})
+      self.hashes = hashes
+
+
+
+   def display_spectrogram(self):
+      f, t, Sxx = self.spectrogram
       plt.pcolormesh(t, f, Sxx, shading='gouraud')
       plt.ylabel('Frequency [Hz]')
       plt.xlabel('Time [sec]')
@@ -182,7 +179,9 @@ class Matching:
         #    hashcodes that match
         # 2. implementing a criterion to decide whether or not both extracts
         #    match
-       
+        self.offset = np.array(self.offset)
+        match_threshold = 5  
+        self.match = len(self.matching) >= match_threshold
              
     def display_scatterplot(self):
 
