@@ -20,6 +20,7 @@ if __name__ == '__main__':
 
     # 2: Create an instance of the class Encoder
     # Insert code here
+    encoder = Encoding()
 
     # 3: Randomly get an extract from one of the songs of the database
     songs = [item for item in os.listdir('./samples') if item[:-4] != '.wav']
@@ -37,6 +38,15 @@ if __name__ == '__main__':
 
     # 5: Using the class Matching, compare the fingerprint to all the 
     # fingerprints in the database
+    for song in os.listdir('./samples') :
+        encoder2 = Encoding()
+        filename = './samples/' + song
+        fs, s = read(filename)
+        encoder2.process(fs, s)
+        hashes2 = encoder.hashes
+        match = Matching(hashes,hashes2)
+        match.display_scatterplot()
+        match.display_histogram()
 
 
 

@@ -27,16 +27,16 @@ class Encoding:
 
    """
 
-   def __init__(self, fs, s):
+   def __init__(self):
       #Initialize Fingerprinting object with sampling frequency (fs) and sampled signal (s)
-      self.fs = fs
-      self.s = s
+      self.fs = None
+      self.s = None
       self.spectrogram = None
       self.hashes = []
       
 
 
-   def process(self):
+   def process(self,fs,s):
       """
 
         To Do
@@ -68,7 +68,8 @@ class Encoding:
         s: numpy array
            sampled signal
       """
-
+      self.fs=fs
+      self.s=s 
       f, t, Sxx = spectrogram(self.s, self.fs)
       self.spectrogram = (f, t, Sxx)
       local_maxima = peak_local_max(Sxx,min_distance=50)
