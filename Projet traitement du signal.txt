@@ -1,0 +1,15 @@
+Projet traitement du signal
+
+1)
+2)
+3) La représentation sous forme de code de hachage est-elle invariante par translation?
+oui le code de hachage ne prend en compte que les écarts de temps entre deux maxima successifs qui est invariant par translation et la valeurs de ces maximas également indépendant par translation.
+si on considere le signal g telle que g(t)=f(t+a) alors les valeurs fa et fi des maxima seront les mêmes et les écarts de temps entre eux également car:    ta-ti= ta+a - (ti+a) 
+4) Le fichier database.py n'arrivait pas à tourner sur vs code. Cela rennvoyait l'erreur:
+line 35, in <module>
+    encoder = Encoding(nperseg=nperseg, noverlap=noverlap,
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Encoding.__init__() got an unexpected keyword argument 'nperseg'
+
+Pour la suite des questions n fichier de donn´ees contenant les signatures de chaque
+morceau.

@@ -45,7 +45,7 @@ if __name__ == '__main__':
         print('Song: ' + audiofile[:-4])
         print('Sampling frequency: ' + str(fs))
         encoder.process(fs, s)
-        print(encoder.anchors.size)
+        #print(encoder.anchors.size)
         print(len(encoder.hashes))
         database.append({'song': audiofile[:-4],
           'hashcodes': encoder.hashes})

@@ -27,12 +27,18 @@ class Encoding:
 
    """
 
-   def __init__(self):
+   def __init__(self,nperseg, noverlap, min_distance,time_window, freq_window):
       #Initialize Fingerprinting object with sampling frequency (fs) and sampled signal (s)
       self.fs = None
       self.s = None
       self.spectrogram = None
       self.hashes = []
+      self.nperseg=nperseg
+      self.noverlap=noverlap
+      self.min_distance=min_distance
+      self.time_window=time_window
+      self.freq_window=freq_window
+
       
 
 
@@ -72,7 +78,7 @@ class Encoding:
       self.s=s 
       f, t, Sxx = spectrogram(self.s, self.fs)
       self.spectrogram = (f, t, Sxx)
-      local_maxima = peak_local_max(Sxx,min_distance=50)
+      local_maxima = peak_local_max(Sxx,min_distance=self.min_distance)
       hashes = []
       # Generate hashes
       delta_t=1
@@ -80,7 +86,7 @@ class Encoding:
       for point in local_maxima:
          t_anchor, f_anchor = point[1], point[0]
          for other_point in local_maxima:
-            if other_point[1] > f_anchor and other_point-f_anchor<=delta_t and abs(other_point[0]-f_anchor)<delta_f :
+            if other_point[1] > f_anchor and other_point[1]-f_anchor<=delta_t and abs(other_point[0]-f_anchor)<delta_f :
                t_target, f_target = other_point[1], other_point[0]
                time_diff = t_target - t_anchor
                freq_diff = f_target - f_anchor
@@ -161,28 +167,36 @@ class Matching:
         self.hashes1 = hashes1
         self.hashes2 = hashes2
 
-        times = np.array([item['t'] for item in self.hashes1])
-        hashcodes = np.array([item['hash'] for item in self.hashes1])
+        
+        times1 = np.array([item['t'] for item in self.hashes1])
+        hashcodes1 = np.array([item['hash'] for item in self.hashes1])
 
+        times2 = np.array([item['t'] for item in self.hashes2])
+        hashcodes2 = np.array([item['hash'] for item in self.hashes2])
         # Establish matches
-        self.matching = []
-        for hc in self.hashes2:
-             t = hc['t']
-             h = hc['hash'][np.newaxis, :]
-             dist = np.sum(np.abs(hashcodes - h), axis=1)
-             mask = (dist < 1e-6)
-             if (mask != 0).any():
-                 self.matching.append(np.array([times[mask][0], t]))
-        self.matching = np.array(self.matching)
+        self.matching1 = []
+        self.matching2 = []
+        self.offset = []
+        for i, hc1 in enumerate(hashes1):
+            for j, hc2 in enumerate(hashes2):
+                if np.allclose(hc1, hc2,rtol=10e-1):
+                    self.matching1.append(times1[i])
+                    self.matching2.append(times2[j])
+                    self.offset.append(times2[j] - times1[i])
+
+        self.matching1 = np.array(self.matching1)
+        self.matching2 = np.array(self.matching2)
+
+        self.offset = np.array(self.offset)
 
         # TODO: complete the implementation of the class by
         # 1. creating an array "offset" containing the time offsets of the 
         #    hashcodes that match
         # 2. implementing a criterion to decide whether or not both extracts
         #    match
-        self.offset = np.array(self.offset)
+        
         match_threshold = 5  
-        self.match = len(self.matching) >= match_threshold
+        self.match = len(self.matching1) >= match_threshold
              
     def display_scatterplot(self):
 
@@ -191,7 +205,7 @@ class Matching:
         that match
         """
     
-        plt.scatter(self.matching[:, 0], self.matching[:, 1])
+        plt.scatter(self.matching1, self.matching2)
         plt.show()
 
 
@@ -201,7 +215,7 @@ class Matching:
         Display the offset histogram
         """
     
-        plt.hist(self.offsets, bins=100, density=True)
+        plt.hist(self.offset, bins=100, density=True)
         plt.xlabel('Offset (s)')
         plt.show()
 
