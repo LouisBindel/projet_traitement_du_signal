@@ -176,14 +176,15 @@ class Matching:
         # Establish matches
         self.matching1 = []
         self.matching2 = []
+        self.match=[]
         self.offset = []
         for i, hc1 in enumerate(hashes1):
             for j, hc2 in enumerate(hashes2):
-                if np.allclose(hc1, hc2,rtol=10e-1):
-                    self.matching1.append(times1[i])
-                    self.matching2.append(times2[j])
-                    self.offset.append(times2[j] - times1[i])
-
+                self.matching1.append(times1[i])
+                self.matching2.append(times2[j])
+                self.offset.append(times2[j] - times1[i])
+                if np.allclose(hc1,hc2,rtol=1e-1):
+                   self.match.append(hc1)
         self.matching1 = np.array(self.matching1)
         self.matching2 = np.array(self.matching2)
 
