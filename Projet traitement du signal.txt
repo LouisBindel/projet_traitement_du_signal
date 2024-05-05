@@ -1,9 +1,9 @@
 Projet traitement du signal
 
-1)
-2)
+1) L'energie d'un signal est fortement influencé par les périodes où |f(t)| est grand.
+
 3) La représentation sous forme de code de hachage est-elle invariante par translation?
 oui le code de hachage ne prend en compte que les écarts de temps entre deux maxima successifs qui est invariant par translation et la valeurs de ces maximas également indépendant par translation.
 si on considere le signal g telle que g(t)=f(t+a) alors les valeurs fa et fi des maxima seront les mêmes et les écarts de temps entre eux également car:    ta-ti= ta+a - (ti+a) 
 
- Malheuresement le code ne renvoit que des histogrammes vides. Nous ne pouvons pas les aficher
+Malheuresement le code ne renvoit que des histogrammes vides. Nous ne pouvons pas les aficher
